@@ -6,7 +6,12 @@
 <nav th:replace="fragments/navbar :: main-nav"></nav>
 
 <div class="container">
-	<h1>Welcome to Spring-Adlister! </h1>
+	<div class="card m-2">
+		<h5 class="card-header" th:text="${ad.title}"></h5>
+		<div class="card-body">
+			<p class="card-text" th:text="${ad.description}"></p>
+		</div>
+	</div>
 </div>
 
 <div th:replace="fragments/scripts :: assets"></div>
