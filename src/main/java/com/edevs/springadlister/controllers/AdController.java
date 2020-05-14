@@ -1,6 +1,7 @@
 package com.edevs.springadlister.controllers;
 
 import com.edevs.springadlister.models.Ad;
+import com.edevs.springadlister.repositories.AdRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,11 @@ import java.util.ArrayList;
 
 @Controller
 public class AdController {
+    private final AdRepository adDao;
+
+    public AdController(AdRepository adDao) {
+        this.adDao = adDao;
+    }
 
     @GetMapping("/")
     public String welcome(){
