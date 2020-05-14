@@ -11,6 +11,8 @@
 		<h5 class="card-header" th:text="${ad.title}"></h5>
 		<div class="card-body">
 			<p class="card-text" th:text="${ad.description}"></p>
+			<a th:href="@{ads/{id}(id=${ad.id})}" class="btn btn-primary">Go somewhere</a>
+
 		</div>
 	</div>
 

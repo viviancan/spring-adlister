@@ -4,10 +4,7 @@ import com.edevs.springadlister.models.Ad;
 import com.edevs.springadlister.repositories.AdRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -26,13 +23,8 @@ public class AdController {
 
     @GetMapping("/ads")
     public String indexAds(Model model){
-        ArrayList<Ad> adList = new ArrayList<>();
 
-        adList.add(new Ad(1, "TV", "Old TV. $200 OBO"));
-        adList.add(new Ad(1, "Bicycle", "Getting rid of my bike! Make an offer."));
-        adList.add(new Ad(1, "Super cool gaming system", "Gaming system for sale! $100"));
-
-        model.addAttribute("ads", adList);
+        model.addAttribute("ads", adDao.findAll());
 
         return "ads/index";
     }
@@ -40,12 +32,32 @@ public class AdController {
     @GetMapping("/ads/{id}")
     public String showAd(@PathVariable long id, Model model){
         System.out.println(id);
-
-        Ad newAd = new Ad(id, 1, "Puppy Crate", "New puppy crate!! My dog already outgrew it... ");
-        model.addAttribute("ad", newAd);
-
+        model.addAttribute("ad", adDao.getAdById(id));
         return "ads/show";
     }
+
+    @GetMapping("/ads/{id}/edit")
+    public String showEditAdForm(@PathVariable long id, Model model){
+        model.addAttribute("ad", adDao.getAdById(id));
+        return "ads/edit";
+    }
+
+    @PostMapping("/ads/{id}/edit")
+    public String editAdd(@PathVariable long id, @RequestParam String title, @RequestParam String description){
+        Ad updatedAd = adDao.getOne(id);
+        updatedAd.setTitle(title);
+        updatedAd.setDescription(description);
+        adDao.save(updatedAd);
+
+        return "redirect:/ads/" + id;
+    }
+
+    @PostMapping("/ads/{id}/delete")
+    public String deleteAd(@PathVariable long id){
+        adDao.deleteById(id);
+        return "redirect:/ads";
+    }
+
 
     @GetMapping("/ads/create")
     @ResponseBody

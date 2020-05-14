@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: main-head"></head>
+
+<body>
+<nav th:replace="fragments/navbar :: main-nav"></nav>
+
+<div class="container">
+	<form action="#" th:action="@{/ads/{id}/edit(id=${ad.id})}" method="post">
+		<div class="form-group">
+			<label for="title">Title</label>
+			<input type="text" class="form-control" id="title" name="title" th:value="${ad.title}" aria-describedby="title">
+		</div>
+		<div class="form-group">
+			<label for="description">Description</label>
+			<input type="text" class="form-control" id="description" name="description" th:value="${ad.description}">
+		</div>
+		<button type="submit" class="btn btn-primary">Update Ad</button>
+	</form>
+
+</div>
+
+
+<div th:replace="fragments/scripts :: assets"></div>
+</body>
+</html>
