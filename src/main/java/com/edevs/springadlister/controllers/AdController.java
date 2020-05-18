@@ -2,18 +2,24 @@ package com.edevs.springadlister.controllers;
 
 import com.edevs.springadlister.models.Ad;
 import com.edevs.springadlister.repositories.AdRepository;
+import com.edevs.springadlister.repositories.UserRepository;
+import com.edevs.springadlister.services.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-
 @Controller
 public class AdController {
     private final AdRepository adDao;
+    private final UserRepository userDao;
 
-    public AdController(AdRepository adDao) {
+    @Autowired
+    private EmailService emailService;
+
+    public AdController(AdRepository adDao, UserRepository userDao) {
         this.adDao = adDao;
+        this.userDao = userDao;
     }
 
     @GetMapping("/")
@@ -32,6 +38,8 @@ public class AdController {
     @GetMapping("/ads/{id}")
     public String showAd(@PathVariable long id, Model model){
         System.out.println(id);
+        Ad showAd = adDao.getAdById(id);
+
         model.addAttribute("ad", adDao.getAdById(id));
         return "ads/show";
     }
@@ -58,18 +66,22 @@ public class AdController {
         return "redirect:/ads";
     }
 
-
     @GetMapping("/ads/create")
-    @ResponseBody
-    public String showCreateAd(){
-        return "This page will show a form to create an ad";
+    public String showCreateAd(Model model){
+        model.addAttribute("ad", new Ad());
+        return "ads/create";
     }
 
     @PostMapping("/ads/create")
-    @ResponseBody
-    public String createAd(){
-        return "This endpoint will create the ad";
+    public String createAd(@ModelAttribute Ad newAd){
+        newAd.setUser(userDao.getOne(1L));
+        Ad savedAd = adDao.save(newAd);
+        emailService.prepareAndSend(
+                savedAd,
+                "Ad created",
+                String.format("Your new Ad has been created, with the id of <a href='/ads/%s' target='_blank'>%s</a>", savedAd.getId(), savedAd.getId()));
+
+
+        return "redirect:/ads/" + savedAd.getId();
     }
-
-
 }

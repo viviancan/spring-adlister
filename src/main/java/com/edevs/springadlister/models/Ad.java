@@ -1,6 +1,7 @@
 package com.edevs.springadlister.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="ads")
@@ -9,7 +10,9 @@ public class Ad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -17,17 +20,24 @@ public class Ad {
     @Column(nullable = false)
     private String description;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name="ads_categories",
+            joinColumns={@JoinColumn(name="ad_id")},
+            inverseJoinColumns={@JoinColumn(name="category_id")}
+    )
+    private List<AdCategory> categories;
+
+
     public Ad(){}
 
-    public Ad(long id, long userId, String title, String description) {
+    public Ad(long id, String title, String description) {
         this.id = id;
-        this.userId = userId;
         this.title = title;
         this.description = description;
     }
 
-    public Ad(long userId, String title, String description) {
-        this.userId = userId;
+    public Ad(String title, String description) {
         this.title = title;
         this.description = description;
     }
@@ -40,12 +50,12 @@ public class Ad {
         this.id = id;
     }
 
-    public long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTitle() {
@@ -60,7 +70,15 @@ public class Ad {
         return description;
     }
 
+
     public void setDescription(String description) {
         this.description = description;
+    }
+    public List<AdCategory> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<AdCategory> categories) {
+        this.categories = categories;
     }
 }

@@ -9,11 +9,18 @@
 	<div class="card m-2">
 		<h5 class="card-header" th:text="${ad.title}"></h5>
 		<div class="card-body">
+
+			<span th:each="category : ${ad.categories}" th:text="${category.name}" class="badge badge-pill badge-primary"></span>
+
+
+
 			<p class="card-text" th:text="${ad.description}"></p>
-			<a class="btn btn-success" th:href="@{/ads/{id}/edit(id=${ad.id})}" role="button">Edit</a>
-			<form th:action="@{/ads/{id}/delete(id=${ad.id})}" method="post">
-				<button class="btn btn-danger">Delete Post</button>
-			</form>
+			<div class="row float-right" role="group" aria-label="Basic example">
+				<a class="btn btn-success m-2" th:href="@{/ads/{id}/edit(id=${ad.id})}" role="button">Edit</a>
+				<form th:action="@{/ads/{id}/delete(id=${ad.id})}" method="post">
+					<button class="btn btn-danger m-2">Delete</button>
+				</form>
+			</div>
 
 		</div>
 	</div>

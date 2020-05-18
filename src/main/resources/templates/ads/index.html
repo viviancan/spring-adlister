@@ -8,10 +8,12 @@
 <div class="container">
 
 	<div class="card m-2" th:each="ad : ${ads}">
-		<h5 class="card-header" th:text="${ad.title}"></h5>
+			<a th:href="@{ads/{id}(id=${ad.id})}">
+				<h5 class="card-header" th:text="${ad.title}"></h5>
+			</a>
 		<div class="card-body">
 			<p class="card-text" th:text="${ad.description}"></p>
-			<a th:href="@{ads/{id}(id=${ad.id})}" class="btn btn-primary">Go somewhere</a>
+			<a th:href="@{ads/{id}(id=${ad.id})}" class="btn btn-link">View</a>
 
 		</div>
 	</div>
@@ -19,5 +21,7 @@
 
 </div>
 <div th:replace="fragments/scripts :: assets"></div>
+
+<script src="webjars"></script>
 </body>
 </html>
