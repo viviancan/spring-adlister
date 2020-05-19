@@ -1,10 +1,12 @@
 package com.edevs.springadlister.controllers;
 
 import com.edevs.springadlister.models.Ad;
+import com.edevs.springadlister.models.User;
 import com.edevs.springadlister.repositories.AdRepository;
 import com.edevs.springadlister.repositories.UserRepository;
 import com.edevs.springadlister.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,17 +31,12 @@ public class AdController {
 
     @GetMapping("/ads")
     public String indexAds(Model model){
-
         model.addAttribute("ads", adDao.findAll());
-
         return "ads/index";
     }
 
     @GetMapping("/ads/{id}")
     public String showAd(@PathVariable long id, Model model){
-        System.out.println(id);
-        Ad showAd = adDao.getAdById(id);
-
         model.addAttribute("ad", adDao.getAdById(id));
         return "ads/show";
     }
@@ -74,13 +71,13 @@ public class AdController {
 
     @PostMapping("/ads/create")
     public String createAd(@ModelAttribute Ad newAd){
-        newAd.setUser(userDao.getOne(1L));
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        newAd.setUser(currentUser);
         Ad savedAd = adDao.save(newAd);
         emailService.prepareAndSend(
                 savedAd,
                 "Ad created",
                 String.format("Your new Ad has been created, with the id of <a href='/ads/%s' target='_blank'>%s</a>", savedAd.getId(), savedAd.getId()));
-
 
         return "redirect:/ads/" + savedAd.getId();
     }
